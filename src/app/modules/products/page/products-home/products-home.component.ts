@@ -1,4 +1,5 @@
-import { MessageService } from 'primeng/api';
+import { deleteActionProduct } from './../../../../models/Interfaces/products/events/deleteActionProduct';
+import { MessageService, ConfirmationService } from 'primeng/api';
 import { ProductsDataTransferService } from './../../../../shared/components/products/products-data-transfer.service';
 import { ProductsService } from 'src/app/services/products/products.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
@@ -19,12 +20,29 @@ export class ProductsHomeComponent implements OnInit, OnDestroy {
   public datas: Array<GetAllProductsResponse> = [];
 
 
-  constructor (private productsService: ProductsService, private productsDataTransferService: ProductsDataTransferService, private router: Router, private messageService: MessageService){}
+  constructor (private productsService: ProductsService, private productsDataTransferService: ProductsDataTransferService, private router: Router, private messageService: MessageService, private confirmationService: ConfirmationService){}
 
-  handleProductAction(evento: EventAction): void{
-    if (evento) {
-      console.log('deu bom', evento);
+  handleProductAction(event: EventAction): void{
+    if (event) {
+      console.log('deu bom', event);
     }
+  }
+
+  handleDeleteAction(evento: deleteActionProduct): void{
+    if (evento) {
+      console.log('deu tudo certo', evento);
+      this.confirmationService.confirm({
+        message: `Deseja realmente excluir o produto ${evento.name}?`,
+        header:  'Confirmação de exclusão',
+        icon: 'pi pi-exclamation-triangle',
+        acceptLabel: 'Sim',
+        rejectLabel: 'Não',
+        accept: () => this.deleteProduct(evento?.id)
+      });
+    }
+  }
+  deleteProduct(id: string) {
+    if (id) {alert(id) }
   }
 
   ngOnInit(): void {
