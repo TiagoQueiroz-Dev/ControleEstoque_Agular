@@ -1,3 +1,4 @@
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { deleteActionProduct } from './../../../../models/Interfaces/products/events/deleteActionProduct';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { ProductsDataTransferService } from './../../../../shared/components/products/products-data-transfer.service';
@@ -8,6 +9,7 @@ import { Router } from '@angular/router';
 import { GetAllProductsResponse } from 'src/app/models/Interfaces/products/response/GetAllProductsResponse';
 import { EventoProduto } from 'src/app/models/enums/products/ProductEvent';
 import { EventAction } from 'src/app/models/Interfaces/products/events/eventAction';
+import { ProductFormComponent } from '../../components/product-form/product-form/product-form.component';
 
 @Component({
   selector: 'app-products-home',
@@ -18,13 +20,26 @@ export class ProductsHomeComponent implements OnInit, OnDestroy {
 
   private readonly destroy$: Subject<void> = new Subject();
   public datas: Array<GetAllProductsResponse> = [];
+  private ref!: DynamicDialogRef;
 
 
-  constructor (private productsService: ProductsService, private productsDataTransferService: ProductsDataTransferService, private router: Router, private messageService: MessageService, private confirmationService: ConfirmationService){}
 
-  handleProductAction(event: EventAction): void{
-    if (event) {
-      console.log('deu bom', event);
+  constructor (private productsService: ProductsService, private productsDataTransferService: ProductsDataTransferService, private router: Router, private messageService: MessageService, private confirmationService: ConfirmationService,private dialogService: DialogService){}
+
+  handleProductAction(evento: EventAction): void{
+    if (evento) {
+      this.ref = this.dialogService.open(ProductFormComponent,{
+        header: evento?.action,
+        width: '70%',
+        contentStyle: {overflow: 'auto'},
+        baseZIndex: 10000,
+        maximizable: true,
+        data:{
+          event: evento,
+          productData: this.datas
+        },
+      });
+      this.ref.onClose.pipe(takeUntil(this.destroy$)).subscribe({next: () => this.GetAPIProductsDatas(),})
     }
   }
 
@@ -42,7 +57,9 @@ export class ProductsHomeComponent implements OnInit, OnDestroy {
     }
   }
   deleteProduct(id: string) {
-    if (id) {alert(id) }
+    if (id) {
+      this.productsService.DeleteProduct(id).pipe(takeUntil(this.destroy$)).subscribe({next: (retorno) => {if (retorno){this.messageService.add({severity: 'success', summary: 'Sucesso', detail: 'Produto excluido com sucesso', life: 2500}), this.GetAPIProductsDatas()}}, error: (erro) => {if (erro){this.messageService.add({severity: 'error', summary: 'Falha', detail: 'Falha ao excluir o produto, entre em contato com o suporte', life: 2500})}}})
+    }
   }
 
   ngOnInit(): void {
@@ -54,13 +71,13 @@ export class ProductsHomeComponent implements OnInit, OnDestroy {
 
     if (productsLoaded.length > 0) {
       this.datas = productsLoaded;
-      console.log('Dados dos produtos', this.datas);
+      console.log('Produtos vindos do BehaviorSubject no product-data-transfer', this.datas);
     }else{
       this.GetAPIProductsDatas();
     }
   }
   GetAPIProductsDatas() {
-    this.productsService.GetAllProducts().pipe(takeUntil(this.destroy$)).subscribe({next: (response) =>{if (response) { this.datas = response; console.log('Dados dos produtos', this.datas); }}, error: (erro) => {this.messageService.add({severity: 'error', summary: 'Erro', detail: 'erro ao carregar produtos', life: 3000}); this.router.navigate(['/dasboard'])}})
+    this.productsService.GetAllProducts().pipe(takeUntil(this.destroy$)).subscribe({next: (response) =>{if (response) { this.datas = response; console.log('produtos vindos diretamente do banco no product service', this.datas); }}, error: (erro) => {this.messageService.add({severity: 'error', summary: 'Erro', detail: 'erro ao carregar produtos', life: 3000}); this.router.navigate(['/dasboard'])}})
   }
 
   ngOnDestroy(): void {
