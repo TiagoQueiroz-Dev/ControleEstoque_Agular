@@ -28,7 +28,7 @@ export class ProductsHomeComponent implements OnInit, OnDestroy {
 
   handleProductAction(evento: EventAction): void{
     if (evento) {
-      this.ref = this.dialogService.open(ProductFormComponent,{
+        this.ref = this.dialogService.open(ProductFormComponent,{
         header: evento?.action,
         width: '70%',
         contentStyle: {overflow: 'auto'},
@@ -77,7 +77,7 @@ export class ProductsHomeComponent implements OnInit, OnDestroy {
     }
   }
   GetAPIProductsDatas() {
-    this.productsService.GetAllProducts().pipe(takeUntil(this.destroy$)).subscribe({next: (response) =>{if (response) { this.datas = response; console.log('produtos vindos diretamente do banco no product service', this.datas); }}, error: (erro) => {this.messageService.add({severity: 'error', summary: 'Erro', detail: 'erro ao carregar produtos', life: 3000}); this.router.navigate(['/dasboard'])}})
+    this.productsService.GetAllProducts().pipe(takeUntil(this.destroy$)).subscribe({next: (response) =>{if (response) { this.datas = response; console.log('produtos vindos diretamente do banco no product service', this.datas); }}, error: (erro) => {this.messageService.add({severity: 'error', summary: 'Erro', detail: 'erro ao carregar produtos', life: 3000}); this.router.navigate(['/dashboard'])}})
   }
 
   ngOnDestroy(): void {

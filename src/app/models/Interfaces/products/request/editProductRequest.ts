@@ -3,5 +3,5 @@ export interface editProductRequest{
   amount: number,
   description: string,
   price: string,
-  category_id: string;
+  product_id: string;
 }
