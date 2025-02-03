@@ -52,7 +52,10 @@ export class ProductFormComponent implements OnDestroy, OnInit {
     price: ['',Validators.required],
     description: ['',Validators.required],
     amount: [0,Validators.required],
+    category_id: ['',Validators.required]
   });
+
+  public renderDropdown = false;
 
   public addProductEvent = EventoProduto.ADD_PRODUCT_EVENT;
   public editProductEvent = EventoProduto.EDIT_PRODUCT_EVENT;
@@ -63,16 +66,20 @@ export class ProductFormComponent implements OnDestroy, OnInit {
     this.productAction = this.ref.data;
 
 
-    if (this.productAction.event?.action === this.editProductEvent && this.productAction.productData) {
-      this.getSelectedProduct(this.productAction.event.id as string)
-    }
+
     if (this.productAction.event.action === this.saleProductEvent) {
       this.getProductDatas();
     }
     this.getAllCategories();
+    this.renderDropdown = true;
   }
   getAllCategories(): void {
-    this.categoriesService.getAllCategories().pipe(takeUntil(this.destroy$)).subscribe({next: (response) => {if (response.length > 0) { this.categoriesData = response}}})
+    this.categoriesService.getAllCategories().pipe(takeUntil(this.destroy$)).subscribe({next: (response) => {if (response.length > 0) {
+    this.categoriesData = response;
+    if (this.productAction.event?.action === this.editProductEvent && this.productAction.productData) {
+      this.getSelectedProduct(this.productAction.event.id as string)
+    }
+  }}})
   }
   ngOnDestroy(): void {
     this.destroy$.next();
@@ -86,7 +93,8 @@ export class ProductFormComponent implements OnDestroy, OnInit {
         amount: this.editProductionForm.value.amount as number,
         description: this.editProductionForm.value.description as string,
         price: this.editProductionForm.value.price as string,
-        product_id: this.productAction?.event.id as string
+        product_id: this.productAction?.event.id as string,
+        category_id: this.editProductionForm.value.category_id as string
       }
       this.productsService.PutProduct(requestEditProduct).pipe(takeUntil(this.destroy$)).subscribe({next: () => {this.messageService.add({severity: 'success', summary: 'Sucesso', detail: 'Produto editado com sucesso', life: 2500}); this.editProductionForm.reset()}, error: (erro) => {this.messageService.add({severity: 'error', summary: 'Erro', detail: 'Não foi possivel editar o produto', life: 2000}), console.log(erro), this.editProductionForm.reset()}})
     }
@@ -109,7 +117,8 @@ export class ProductFormComponent implements OnDestroy, OnInit {
           name: this.productSelected?.name,
           price: this.productSelected?.price,
           description: this.productSelected?.description,
-          amount: this.productSelected?.amount
+          amount: this.productSelected?.amount,
+          category_id: this.productSelected?.category?.id
         });
       }
     }

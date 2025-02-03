@@ -4,4 +4,5 @@ export interface editProductRequest{
   description: string,
   price: string,
   product_id: string;
+  category_id: string;
 }
