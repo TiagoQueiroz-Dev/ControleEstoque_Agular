@@ -23,10 +23,12 @@ import { TooltipModule } from 'primeng/tooltip';
 import { CategoriesHomeComponent } from './pages/categories-home/categories-home.component';
 import { CATEGORIES_ROUTING } from './categories.routing';
 import { SharedModule } from "src/app/shared/shared.module";
+import { CategoriesTableComponent } from './components/categories-table/categories-table.component';
 
 @NgModule({
   declarations: [
-    CategoriesHomeComponent
+    CategoriesHomeComponent,
+    CategoriesTableComponent
   ],
   imports: [
     CommonModule,
