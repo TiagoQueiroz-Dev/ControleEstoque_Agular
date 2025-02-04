@@ -1,10 +1,13 @@
+import { ProductsService } from 'src/app/services/products/products.service';
 import { Router } from '@angular/router';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { categoriesResponse } from 'src/app/models/Interfaces/categories/response/categoriesResponse';
 import { CategoriesService } from './../../../../services/categories/categories.service';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
+import { deleteCategory } from 'src/app/models/Interfaces/categories/event/deleteCategory';
+import { GetAllProductsResponse } from 'src/app/models/Interfaces/products/response/GetAllProductsResponse';
 
 @Component({
   selector: 'app-categories-home',
@@ -14,13 +17,15 @@ import { Subject, takeUntil } from 'rxjs';
 export class CategoriesHomeComponent implements OnInit, OnDestroy {
 
   private readonly destroy$: Subject<void> = new Subject();
-  public AllCategories: Array<categoriesResponse> = []
+  public AllCategories: Array<categoriesResponse> = [];
+
 
   constructor(
     private categoriesService: CategoriesService,
     private dialogService: DialogService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
+    private productsService: ProductsService,
     private router: Router
   ){}
 
@@ -28,6 +33,30 @@ export class CategoriesHomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getAllCategories();
+  }
+
+  telaconfirmarDelete(Evento: deleteCategory){
+    this.productsService.GetAllProducts().pipe(takeUntil(this.destroy$)).subscribe({next: (response) => {if (response.filter((m) => m.category.id == Evento.category_id).length > 0) {this.confirmationService.confirm({
+      message: `Não é possivel excluir a categoria pois existem ${response.filter((m) => m.category.id == Evento.category_id).length} produtos vinculados a esta categoria`,
+      header:  'Confirmação de exclusão',
+      icon: 'pi pi-exclamation-triangle',
+      acceptVisible: false,
+      rejectVisible: false,
+    })  }else{ this.confirmationService.confirm({
+          message: `deseja fazer a exclusão da categoria ${Evento.category_name}?`,
+          header:  'Confirmação de exclusão',
+          icon: 'pi pi-exclamation-triangle',
+          acceptLabel: 'Sim',
+          rejectLabel: 'Não',
+          accept: () => this.deletearCategoria(Evento)
+        }); this.getAllCategories()}}})
+  }
+
+  deletearCategoria(categoria: deleteCategory): void{
+    console.log('componente pai',categoria);
+    if (categoria.category_id != '' && categoria.category_name != '') {
+      this.categoriesService.deleteCategories(categoria).pipe(takeUntil(this.destroy$)).subscribe({next: () => {this.getAllCategories(),console.log('DEU TUDO CERTO')}})
+    }
   }
 
   getAllCategories(){
