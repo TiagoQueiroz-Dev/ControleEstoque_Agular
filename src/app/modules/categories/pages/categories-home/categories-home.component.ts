@@ -1,13 +1,15 @@
 import { ProductsService } from 'src/app/services/products/products.service';
 import { Router } from '@angular/router';
 import { MessageService, ConfirmationService } from 'primeng/api';
-import { DialogService } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { categoriesResponse } from 'src/app/models/Interfaces/categories/response/categoriesResponse';
 import { CategoriesService } from './../../../../services/categories/categories.service';
 import { Component, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { deleteCategory } from 'src/app/models/Interfaces/categories/event/deleteCategory';
 import { GetAllProductsResponse } from 'src/app/models/Interfaces/products/response/GetAllProductsResponse';
+import { editCategoryAction } from 'src/app/models/Interfaces/categories/event/editCategoryAction';
+import { CategoryFormComponent } from '../../components/category-form/category-form.component';
 
 @Component({
   selector: 'app-categories-home',
@@ -18,6 +20,7 @@ export class CategoriesHomeComponent implements OnInit, OnDestroy {
 
   private readonly destroy$: Subject<void> = new Subject();
   public AllCategories: Array<categoriesResponse> = [];
+  private ref!: DynamicDialogRef;
 
 
   constructor(
@@ -48,14 +51,39 @@ export class CategoriesHomeComponent implements OnInit, OnDestroy {
           icon: 'pi pi-exclamation-triangle',
           acceptLabel: 'Sim',
           rejectLabel: 'Não',
-          accept: () => this.deletearCategoria(Evento)
-        }); this.getAllCategories()}}})
+          accept: () => {this.deletearCategoria(Evento), this.getAllCategories(), this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Sucesso ao excluir a categoria',
+            life: 2500
+          })}});}}, error: () => {this.getAllCategories(), this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Sucesso ao excluir a categoria',
+            life: 2500
+          })} })
   }
 
   deletearCategoria(categoria: deleteCategory): void{
     console.log('componente pai',categoria);
     if (categoria.category_id != '' && categoria.category_name != '') {
       this.categoriesService.deleteCategories(categoria).pipe(takeUntil(this.destroy$)).subscribe({next: () => {this.getAllCategories(),console.log('DEU TUDO CERTO')}})
+    }
+  }
+
+  AdicionarCategory(evento: editCategoryAction){
+    if (evento) {
+      this.ref = this.dialogService.open(CategoryFormComponent,{
+        header: evento?.action,
+        width: '70%',
+        contentStyle: {overflow: 'auto'},
+        baseZIndex: 10000,
+        maximizable: true,
+        data:{
+          event: evento,
+        },
+      });
+      this.ref.onClose.pipe(takeUntil(this.destroy$)).subscribe({next: () => this.getAllCategories() })
     }
   }
 

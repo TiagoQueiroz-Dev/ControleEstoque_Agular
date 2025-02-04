@@ -1,0 +1,11 @@
+<div>
+  <form [formGroup]="addCategorieForm" (ngSubmit)="handleSubmitAddCategories()" >
+    <div class="card flex flex-column md:flex-column gap-3">
+      <input pInputText placeholder="Nome" formControlName="name" >
+      <div class="flex flex-row jsutify-content-center align-content-center align-items-center">
+        <p-button type="submit" label="concluir">
+        </p-button>
+      </div>
+    </div>
+  </form>
+</div>

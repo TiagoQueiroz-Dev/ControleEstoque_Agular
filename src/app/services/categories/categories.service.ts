@@ -30,4 +30,8 @@ export class CategoriesService {
     return this.http.delete<void>(`${this.API_URL}/category/delete`,{...this.httpOptions, params: {category_id: requestData?.category_id}})
   }
 
+  postNewCategory(requestData: {name: string}): Observable<Array<categoriesResponse>>{
+    return this.http.post<Array<categoriesResponse>>(`${this.API_URL}/category`, requestData, this.httpOptions);
+  }
+
 }

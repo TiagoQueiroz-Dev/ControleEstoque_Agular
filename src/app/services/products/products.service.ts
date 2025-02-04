@@ -24,7 +24,7 @@ export class ProductsService {
     })
    }
 
-  constructor(private http: HttpClient, private cookieService: CookieService) { }
+  constructor(private http: HttpClient, private cookieService: CookieService) { } 
 
   GetAllProducts(): Observable<Array<GetAllProductsResponse>>{
 
