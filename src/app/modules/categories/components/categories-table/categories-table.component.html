@@ -62,6 +62,7 @@
                   pRipple
                   icon="pi pi-pencil"
                   class="p-button-rounded p-button-warning"
+                  (click)="handleCategoryEvent(editCategoryAction, category?.id, category?.name)"
                 ></button>
                 <button
                   pButton

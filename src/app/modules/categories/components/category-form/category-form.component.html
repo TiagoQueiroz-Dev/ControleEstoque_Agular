@@ -1,9 +1,9 @@
 <div>
-  <form [formGroup]="addCategorieForm" (ngSubmit)="handleSubmitAddCategories()" >
+  <form [formGroup]="addCategorieForm" (ngSubmit)="separa()" >
     <div class="card flex flex-column md:flex-column gap-3">
       <input pInputText placeholder="Nome" formControlName="name" >
-      <div class="flex flex-row jsutify-content-center align-content-center align-items-center">
-        <p-button type="submit" label="concluir">
+      <div class="flex flex-row justify-content-center align-content-center align-items-center">
+        <p-button [disabled]="!addCategorieForm.valid" type="submit" label="concluir">
         </p-button>
       </div>
     </div>
