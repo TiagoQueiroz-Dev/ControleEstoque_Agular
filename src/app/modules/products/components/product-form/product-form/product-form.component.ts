@@ -1,3 +1,4 @@
+import { saleProductRequest } from 'src/app/models/Interfaces/products/request/saleProductRequest';
 import { EventoProduto } from './../../../../../models/enums/products/ProductEvent';
 import { ProductsDataTransferService } from './../../../../../shared/components/products/products-data-transfer.service';
 import { ProductsService } from 'src/app/services/products/products.service';
@@ -9,7 +10,7 @@ import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
 import { categoriesResponse } from 'src/app/models/Interfaces/categories/response/categoriesResponse';
 import { Router } from '@angular/router';
 import { addProductRequest } from 'src/app/models/Interfaces/products/request/addProductRequest';
-import { DialogService, DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { GetAllProductsResponse } from 'src/app/models/Interfaces/products/response/GetAllProductsResponse';
 import { EventAction } from 'src/app/models/Interfaces/products/events/eventAction';
 import { editProductRequest } from 'src/app/models/Interfaces/products/request/editProductRequest';
@@ -28,7 +29,8 @@ export class ProductFormComponent implements OnDestroy, OnInit {
     private productsService: ProductsService,
     private dialogService: DialogService,
     private productsDataTransferService: ProductsDataTransferService,
-    public ref: DynamicDialogConfig
+    public dialogref: DynamicDialogRef,
+    public ref: DynamicDialogConfig,
   ){}
 
   private readonly destroy$: Subject<void> = new Subject();
@@ -36,9 +38,12 @@ export class ProductFormComponent implements OnDestroy, OnInit {
   public selectedCategory: Array<{name: string, code: string}> = [];
   public productSelected!: GetAllProductsResponse;
   public productDatas!: Array<GetAllProductsResponse>;
+  public saleProductSelected!: GetAllProductsResponse;
+  public display: boolean = false;
   public productAction!: {
     event: EventAction,
-    productData: Array<GetAllProductsResponse>
+    productData: Array<GetAllProductsResponse>,
+    display: boolean
   }
   public addProductionForm = this.formBuilder.group({
     name:['',Validators.required],
@@ -54,6 +59,10 @@ export class ProductFormComponent implements OnDestroy, OnInit {
     amount: [0,Validators.required],
     category_id: ['',Validators.required]
   });
+  public saleProductForm = this.formBuilder.group({
+    amount:[0,Validators.required],
+    product_id: ['',Validators.required],
+  })
 
   public renderDropdown = false;
 
@@ -64,7 +73,7 @@ export class ProductFormComponent implements OnDestroy, OnInit {
   ngOnInit(): void {
     console.log('AAAAAAAAAAAAAAAAAAAAAAA',this.ref.data)
     this.productAction = this.ref.data;
-
+    this.display = this.productAction.display;
 
 
     if (this.productAction.event.action === this.saleProductEvent) {
@@ -140,6 +149,27 @@ export class ProductFormComponent implements OnDestroy, OnInit {
         life: 2000
       }), error: (erro) => console.log(erro)});
       this.addProductionForm.reset();
+    }
+  }
+  handleSubmitSaleProduct(){
+    if (this.saleProductForm.valid && this.saleProductForm.value) {
+      const requestDatas: saleProductRequest = {
+        amount: this.saleProductForm.value.amount as number,
+        product_id: this.saleProductForm.value.product_id as string
+      }
+
+this.productsService.PutSaleProduct(requestDatas).pipe(takeUntil(this.destroy$)).subscribe({next: (response) => {if (response){ this.dialogref.close(), this.messageService.add({
+        severity: 'success',
+        summary: 'Sucesso',
+        detail: `A venda foi efetuada com sucesso`,
+        life: 2500
+      }), this.router.navigate(['/dashboard']), this.getProductDatas()}}, error: (erro) => {this.messageService.add({
+        severity: 'error',
+        summary: 'Erro',
+        detail: 'Não foi possivel realizar a venda',
+        life: 2500
+      }), console.log(erro)}})
+
     }
   }
 }

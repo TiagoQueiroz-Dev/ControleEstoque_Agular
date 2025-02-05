@@ -1,5 +1,4 @@
 <!--formulario de novo produto-->
-
 <div *ngIf="productAction?.event?.action === addProductEvent">
   <form [formGroup]="addProductionForm" (ngSubmit)="handleSubmitAddProduct()" >
     <div class="card flex flex-column md:flex-column gap-3">
@@ -56,6 +55,18 @@
           type="submit"
           label="Concluir"
         ></p-button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div *ngIf="productAction?.event?.action === saleProductEvent">
+  <form [formGroup]="saleProductForm" (ngSubmit)="handleSubmitSaleProduct()">
+    <div class="card flex flex-column md:flex-column gap-3">
+      <p-dropdown styleClass="w-full" optionLabel="name" optionValue="id" placeholder="Selecione um produto" formControlName="product_id" [options]="productDatas" [(ngModel)]="saleProductSelected"></p-dropdown>
+      <input type="number" pInputText placeholder="Quantidade" formControlName="amount">
+      <div class="flex flex-row justify-content-center align-content-center align-items-center">
+        <p-button [disabled]="!saleProductForm.valid" type="submit" label="Concluir" ></p-button>
       </div>
     </div>
   </form>

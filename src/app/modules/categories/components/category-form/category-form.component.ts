@@ -77,12 +77,12 @@ export class CategoryFormComponent implements OnInit, OnDestroy{
         name: this.addCategorieForm.value.name as string,
         category_id: this.category.event.id as string
       }
-      this.categoriesService.putCategory(categoriaAtualizada).pipe(takeUntil(this.destroy$)).subscribe({next: () => this.messageService.add({
+      this.categoriesService.putCategory(categoriaAtualizada).pipe(takeUntil(this.destroy$)).subscribe({next: () => {this.addCategorieForm.reset(), this.messageService.add({
         severity: 'success',
         summary: 'Sucesso',
         detail: `A categoria foi atualizada com sucesso`,
         life: 2500
-      }), error: (erro) => {this.messageService.add({
+      })}, error: (erro) => {this.messageService.add({
         severity: 'error',
         summary: 'Erro',
         detail: 'Não foi possivel atualizar a categoria',

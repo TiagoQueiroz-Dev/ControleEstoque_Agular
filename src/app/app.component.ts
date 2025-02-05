@@ -11,6 +11,10 @@ export class AppComponent implements OnInit {
   constructor(private primeNgConfig: PrimeNGConfig){}
   ngOnInit(): void {
     this.primeNgConfig.ripple = true;
+    this.primeNgConfig.setTranslation({
+      apply: 'Aplicar',
+      clear: 'Limpar'
+    })
     //essa definição 'true é referente a as animações'
   }
 }
