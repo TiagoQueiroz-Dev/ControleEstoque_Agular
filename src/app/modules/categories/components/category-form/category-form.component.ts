@@ -28,7 +28,7 @@ export class CategoryFormComponent implements OnInit, OnDestroy{
   public editCategoryAction = CategoryEvent.EDIT_CATEGORY_ACTION;
 
   ngOnInit(): void {
-    console.log(this.ref.data);
+    
     this.category = this.ref.data;
 
     if (this.category.event.action === this.editCategoryAction && this.category.event.id) {

@@ -19,7 +19,7 @@ export class CategoriesTableComponent {
 
 
   handleDeleteCategoryEvent(category_id: string, category_name: string): void{
-    this.deleteCategories.emit({category_id,category_name}), console.log('componente filho',{category_id,category_name});
+    this.deleteCategories.emit({category_id,category_name});
   }
 
   handleCategoryEvent(action: string, id?: string, name?: string): void{

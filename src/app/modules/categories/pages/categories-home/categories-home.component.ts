@@ -65,9 +65,8 @@ export class CategoriesHomeComponent implements OnInit, OnDestroy {
   }
 
   deletearCategoria(categoria: deleteCategory): void{
-    console.log('componente pai',categoria);
     if (categoria.category_id != '' && categoria.category_name != '') {
-      this.categoriesService.deleteCategories(categoria).pipe(takeUntil(this.destroy$)).subscribe({next: () => {this.getAllCategories(),console.log('DEU TUDO CERTO')}})
+      this.categoriesService.deleteCategories(categoria).pipe(takeUntil(this.destroy$)).subscribe({next: () => {this.getAllCategories()}})
     }
   }
 

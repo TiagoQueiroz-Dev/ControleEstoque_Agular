@@ -45,7 +45,6 @@ export class ProductsHomeComponent implements OnInit, OnDestroy {
 
   handleDeleteAction(evento: deleteActionProduct): void{
     if (evento) {
-      console.log('deu tudo certo', evento);
       this.confirmationService.confirm({
         message: `Deseja realmente excluir o produto ${evento.name}?`,
         header:  'Confirmação de exclusão',
@@ -71,7 +70,6 @@ export class ProductsHomeComponent implements OnInit, OnDestroy {
 
     if (productsLoaded.length > 0) {
       this.datas = productsLoaded;
-      console.log('Produtos vindos do BehaviorSubject no product-data-transfer', this.datas);
     }else{
       this.GetAPIProductsDatas();
     }

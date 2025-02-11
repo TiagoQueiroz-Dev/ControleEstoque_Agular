@@ -26,7 +26,6 @@ export class CategoriesService {
   }
 
   deleteCategories(requestData: {category_id: string}): Observable<void>{
-    console.log('Valor no service',requestData);
     return this.http.delete<void>(`${this.API_URL}/category/delete`,{...this.httpOptions, params: {category_id: requestData?.category_id}})
   }
 

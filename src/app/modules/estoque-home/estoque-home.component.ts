@@ -35,7 +35,6 @@ export class EstoqueHomeComponent implements OnDestroy {
 
 
   onSubmitLoginForm(): void{
-    //console.log('dados de login', this.loginForm.value);
     this.userService.authUser(this.loginForm.value as AuthRequest).pipe(takeUntil(this.destroy$)).subscribe({next: (response)=> {if(response){this.messageService.add({
       severity: 'success',
       summary: 'Sucesso',
@@ -49,7 +48,7 @@ export class EstoqueHomeComponent implements OnDestroy {
     })});
   }
   onSubmitsingupForm(): void{
-    //console.log('dados de login', this.singupForm.value);
+
     this.userService.signupUser(this.singupForm.value as SignupUserRequest).pipe(takeUntil(this.destroy$)).subscribe({next: (response)=> {if(response){this.messageService.add({
       severity: 'success',
       summary: 'Sucesso',

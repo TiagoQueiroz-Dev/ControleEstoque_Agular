@@ -1,3 +1,4 @@
+import { VendasService } from 'src/app/services/vendas/vendas.service';
 import { saleProductRequest } from 'src/app/models/Interfaces/products/request/saleProductRequest';
 import { EventoProduto } from './../../../../../models/enums/products/ProductEvent';
 import { ProductsDataTransferService } from './../../../../../shared/components/products/products-data-transfer.service';
@@ -14,6 +15,8 @@ import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dy
 import { GetAllProductsResponse } from 'src/app/models/Interfaces/products/response/GetAllProductsResponse';
 import { EventAction } from 'src/app/models/Interfaces/products/events/eventAction';
 import { editProductRequest } from 'src/app/models/Interfaces/products/request/editProductRequest';
+import { VendaHomeComponent } from 'src/app/modules/venda-produto/page/venda-home/venda-home.component';
+import { registroVenda } from 'src/app/models/Interfaces/products/events/registroVenda';
 
 @Component({
   selector: 'app-product-form',
@@ -31,6 +34,7 @@ export class ProductFormComponent implements OnDestroy, OnInit {
     private productsDataTransferService: ProductsDataTransferService,
     public dialogref: DynamicDialogRef,
     public ref: DynamicDialogConfig,
+    public vendasService: VendasService,
   ){}
 
   private readonly destroy$: Subject<void> = new Subject();
@@ -39,6 +43,7 @@ export class ProductFormComponent implements OnDestroy, OnInit {
   public productSelected!: GetAllProductsResponse;
   public productDatas!: Array<GetAllProductsResponse>;
   public saleProductSelected!: GetAllProductsResponse;
+  public saleProduct!: GetAllProductsResponse;
   public display: boolean = false;
   public productAction!: {
     event: EventAction,
@@ -71,7 +76,6 @@ export class ProductFormComponent implements OnDestroy, OnInit {
   public saleProductEvent = EventoProduto.VEND_PRODUCT_EVENT;
 
   ngOnInit(): void {
-    console.log('AAAAAAAAAAAAAAAAAAAAAAA',this.ref.data)
     this.productAction = this.ref.data;
     this.display = this.productAction.display;
 
@@ -153,10 +157,24 @@ export class ProductFormComponent implements OnDestroy, OnInit {
   }
   handleSubmitSaleProduct(){
     if (this.saleProductForm.valid && this.saleProductForm.value) {
+      var valorTotal!: number;
       const requestDatas: saleProductRequest = {
         amount: this.saleProductForm.value.amount as number,
         product_id: this.saleProductForm.value.product_id as string
       }
+      console.log(requestDatas)
+      if (requestDatas) {
+        this.productDatas.find((response) => {if (response.id === requestDatas.product_id) { this.saleProduct = response}})
+      }
+      valorTotal = parseFloat(this.saleProduct.price) * requestDatas.amount;
+      const registroVenda : registroVenda = {
+        id: requestDatas.product_id + '01',
+        name: this.saleProduct.name as string,
+        amount: requestDatas.amount,
+        valorTotal: valorTotal.toString()
+      }
+
+      this.vendasService.atualizarLista(registroVenda);
 
 this.productsService.PutSaleProduct(requestDatas).pipe(takeUntil(this.destroy$)).subscribe({next: (response) => {if (response){ this.dialogref.close(), this.messageService.add({
         severity: 'success',
