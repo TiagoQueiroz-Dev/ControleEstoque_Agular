@@ -1,2 +1,91 @@
 <app-toolbar-navigation></app-toolbar-navigation>
-<h1>testando</h1>
+
+<div class="grid">
+  <div class="col-12">
+    <p-card
+    styleClass="shadow-3 m-5 text-indigo-800"
+    header="Registro de Vendas">
+      <p-table
+      #productsTable
+        [value]="todasVendas"
+        [rows]="100"
+        [paginator]="false"
+        [responsive]="true"
+        [globalFilterFields]="['name', 'amount']"
+        [tableStyle]="{ 'min-width': '75rem' }"
+        [rowHover]="true"
+        [showCurrentPageReport]="true"
+        dataKey="id">
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="name" >
+              <div class="flex justify-content-between align-items-center">
+              <div class="flex justify-content-between align-items-center">
+                Produto
+              </div>
+              <div class="flex justify-content-between align-items-center">
+                <p-sortIcon field="name"></p-sortIcon>
+                <p-columnFilter
+                  type="text"
+                  field="name"
+                  display="menu"
+                  matchMode="contains"
+                  [showMatchModes]="false"
+                  [showOperator]="false"
+                  [showAddButton]="false"
+                ></p-columnFilter>
+              </div>
+            </div>
+          </th>
+            <th pSortableColumn="amount" >
+              <div class="flex justify-content-between align-items-center">
+              <div class="flex justify-content-between align-items-center">
+                Quantidade
+              </div>
+              <div class="flex justify-content-between align-items-center">
+                <p-sortIcon field="amount"></p-sortIcon>
+                <p-columnFilter
+                  type="text"
+                  field="amount"
+                  display="menu"
+                  matchMode="contains"
+                  [showMatchModes]="false"
+                  [showOperator]="false"
+                  [showAddButton]="false"
+                ></p-columnFilter>
+              </div>
+            </div>
+          </th>
+            <th pSortableColumn="valorTotal" >
+              <div class="flex justify-content-between align-items-center">
+              <div class="flex justify-content-between align-items-center">
+                Valor Total
+              </div>
+              <div class="flex justify-content-between align-items-center">
+                <p-sortIcon field="price"></p-sortIcon>
+                <p-columnFilter
+                  type="text"
+                  field="price"
+                  display="menu"
+                  matchMode="contains"
+                  [showMatchModes]="false"
+                  [showOperator]="false"
+                  [showAddButton]="false"
+                ></p-columnFilter>
+              </div>
+            </div>
+          </th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-venda>
+          <tr class="TamanhoColunaRegistro">
+            <td>{{venda.name}}</td>
+            <td>{{venda.amount}}</td>
+            <td>{{venda.valorTotal | currency:'BRL'}}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-card>
+  </div>
+</div>

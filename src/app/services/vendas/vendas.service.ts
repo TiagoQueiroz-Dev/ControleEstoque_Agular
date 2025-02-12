@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { EventoProduto } from 'src/app/models/enums/products/ProductEvent';
 import { registroVenda } from 'src/app/models/Interfaces/products/events/registroVenda';
 
 @Injectable({
@@ -15,7 +16,7 @@ export class VendasService {
 
   public setLocalStorage(): void{
     const todo = JSON.stringify(this.todasVendas);
-    if (todo) {localStorage.setItem('ListaProdutos', todo)};
+    if (todo) {localStorage.setItem(EventoProduto.VEND_PRODUCT_EVENT, todo)};
 
   }
 

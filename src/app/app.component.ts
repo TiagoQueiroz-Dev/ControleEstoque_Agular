@@ -9,6 +9,7 @@ import {PrimeNGConfig} from 'primeng/api';
 export class AppComponent implements OnInit {
   title = 'controle-estoque';
   constructor(private primeNgConfig: PrimeNGConfig){}
+
   ngOnInit(): void {
     this.primeNgConfig.ripple = true;
     this.primeNgConfig.setTranslation({

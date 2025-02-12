@@ -31,6 +31,7 @@ export class EstoqueHomeComponent implements OnDestroy {
     private cookieService: CookieService,
     private messageService: MessageService,
     private router: Router
+
   ){}
 
 

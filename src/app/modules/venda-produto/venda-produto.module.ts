@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { VendaHomeComponent } from './page/venda-home/venda-home.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -12,11 +12,10 @@ import { InputSwitchModule } from "primeng/inputswitch";
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from "primeng/inputtextarea";
 import { InputNumberModule } from 'primeng/inputnumber';
-import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
+import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { ConfirmDialogModule } from "primeng/confirmdialog";
 import { TooltipModule } from 'primeng/tooltip';
-import { ConfirmationService } from 'primeng/api';
 import { RouterModule } from '@angular/router';
 import { venda_route } from './venda-produto.routing';
 
@@ -47,6 +46,7 @@ import { venda_route } from './venda-produto.routing';
     ConfirmDialogModule,
     TooltipModule
 
-  ]
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class VendaProdutoModule { }
